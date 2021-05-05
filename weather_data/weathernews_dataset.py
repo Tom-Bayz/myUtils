@@ -6,6 +6,7 @@ import os
 import datetime as dt
 from JapanMeteorologicalAgency_dataset import get_JMA_placelist
 
+
 def get_WN_Forecast(latitude,longitude):
 
     base_url = "https://weathernews.jp/onebox/%s/%s/"
