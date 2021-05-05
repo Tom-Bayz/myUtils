@@ -3,6 +3,8 @@ import requests
 from bs4 import BeautifulSoup 
 import numpy as np
 import os
+import datetime as dt
+from JapanMeteorologicalAgency_dataset import get_JMA_placelist
 
 def get_WN_Forecast(latitude,longitude):
 
@@ -31,8 +33,9 @@ def get_WN_Forecast(latitude,longitude):
         #header #####################
         head = s.findAll('div',class_='weather-day__head')[0]
         head = ( BeautifulSoup(str(head),features="lxml").findAll('p') )
-        head = [str(h).replace("<p>","").replace("</p>","") for h in head]
-        
+        head = [str(h.text) for h in head]
+        print(head)
+
 
         #body #####################
         body = s.findAll('div',class_='weather-day__body')[0]
@@ -58,22 +61,47 @@ def get_WN_Forecast(latitude,longitude):
         df.append(tmp)
 
     df = pd.concat(df)
-    df = df[["Month","Day","Hour","Precip.","Temp."]]
-    df = df.rename(columns={"Precip.":"降水量（mm/h）","Temp.":"気温（°F）"})
+    df = df[["Month","Day","Hour","Precip.","Temp.","Wind"]]
+    df = df.rename(columns={"Precip.":"降水量（mm/h）","Temp.":"気温（F）","Wind":"風"})
     
     return df
+
+def get_WN_forecast_4_Allplace(place_list):
+    
+    for idx,place in place_list.iterrows():
+        
+        OUT_DIR = "D:\weather_data\WN_forecast"
+        dir_name = place["pref_name"]+"_"+place["block_name"]
+        dir_name = os.path.join(OUT_DIR,dir_name)
+
+        if not(os.path.exists(dir_name)):
+            os.makedirs(dir_name)
+        
+        
+        latitude = place["latitude"]
+        longitude = place["longitude"]
+        now = dt.datetime.now()
+        
+        print(">> ",place["pref_name"],"-",place["block_name"]," date:",now)
+        try:
+            df = get_WN_Forecast(latitude, longitude)
+            
+            filename = "%04d-%02d-%02d_%02d.csv"%(now.year,now.month,now.day,now.hour)
+            df.to_csv(os.path.join(dir_name,filename),
+                      index=False,
+                      encoding="shift-jis")
+        except:
+            df = None
+            pass
+        
+        print(df)
+        
 
 
 if __name__ == "__main__":
     
-    import datetime as dt
-    DIR = "WN_forecast"
+    # 場所のリスト
+    print("getting place list...")
+    place_list = get_JMA_placelist()
     
-    # 東京の予報
-    df = get_WN_Forecast(35.6895014, 139.6917337)
-    
-    now = dt.datetime.now()
-    filename = "%04d-%02d-%02d_%02d"%(now.year,now.month,now.day,now.hour)+".csv"
-    filename = os.path.join(DIR,filename)
-    
-    df.to_csv(filename,index=False)    
+    get_WN_forecast_4_Allplace(place_list)
