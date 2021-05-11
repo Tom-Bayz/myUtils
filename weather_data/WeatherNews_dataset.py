@@ -72,7 +72,7 @@ def get_WN_forecast_4_Allplace(place_list,out_dir):
     for idx,place in place_list.iterrows():
         
         dir_name = place["pref_name"]+"_"+place["block_name"]
-        dir_name = os.path.join(OUT_DIR,dir_name)
+        dir_name = os.path.join(out_dir,dir_name)
 
         if not(os.path.exists(dir_name)):
             os.makedirs(dir_name)
