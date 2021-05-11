@@ -158,13 +158,12 @@ def get_JWA_Forecast(url):
         return df
     
     
-def get_JWA_forecast_4_Allplace(place_list):
+def get_JWA_forecast_4_Allplace(place_list,out_dir):
     
     for idx,place in place_list.iterrows():
         
-        OUT_DIR = "D:\weather_data\JWA_forecast"
         dir_name = place["地方"]+"_"+place["市"]
-        dir_name = os.path.join(OUT_DIR,dir_name)
+        dir_name = os.path.join(out_dir,dir_name)
 
         if not(os.path.exists(dir_name)):
             os.makedirs(dir_name)
@@ -189,6 +188,7 @@ if __name__ == "__main__":
     # 場所のリスト
     print("getting place list...")
     place_list = get_JWA_placelist()
+    out_dir = "D:\weather_data\JWA_forecast"
     
-    get_JWA_forecast_4_Allplace(place_list)  
+    get_JWA_forecast_4_Allplace(place_list,out_dir)  
     
