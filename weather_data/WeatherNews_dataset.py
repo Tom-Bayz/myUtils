@@ -67,11 +67,10 @@ def get_WN_Forecast(latitude,longitude):
     
     return df
 
-def get_WN_forecast_4_Allplace(place_list):
+def get_WN_forecast_4_Allplace(place_list,out_dir):
     
     for idx,place in place_list.iterrows():
         
-        OUT_DIR = "D:\weather_data\WN_forecast"
         dir_name = place["pref_name"]+"_"+place["block_name"]
         dir_name = os.path.join(OUT_DIR,dir_name)
 
@@ -104,5 +103,6 @@ if __name__ == "__main__":
     # 場所のリスト
     print("getting place list...")
     place_list = get_JMA_placelist()
+    out_dir = "D:\weather_data\WN_forecast"
     
-    get_WN_forecast_4_Allplace(place_list)
+    get_WN_forecast_4_Allplace(place_list,out_dir)
