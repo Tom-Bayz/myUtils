@@ -135,7 +135,7 @@ def get_JMA_record(area_type,pref_no,block_no,year,month,day):
     return df[["date"]+col]
 
 
-def get_JMA_record_4_Allplace(place_list):
+def get_JMA_record_4_Allplace(place_list,out_dir):
     
     # place loop
     for idx, place in place_list.iterrows():
@@ -145,9 +145,8 @@ def get_JMA_record_4_Allplace(place_list):
                                   freq="1D")
 
         # dirがなければ作成
-        OUT_DIR = "D:\weather_data\JMA_record"
         dir_name = place["pref_name"]+"_"+place["block_name"]
-        dir_name = os.path.join(OUT_DIR,dir_name)
+        dir_name = os.path.join(out_dir,dir_name)
 
         if not(os.path.exists(dir_name)):
             os.makedirs(dir_name)
@@ -180,10 +179,9 @@ if __name__ == "__main__":
     # 場所のリスト
     print("getting place list...")
     place_list = get_JMA_placelist()
+    out_dir = "D:\weather_data\JMA_record"
     
-    #place_list = place_list[place_list["block_name"]=="西米良"]
-    
-    get_JMA_record_4_Allplace(place_list)  
+    get_JMA_record_4_Allplace(place_list,out_dir)  
         
         
            
